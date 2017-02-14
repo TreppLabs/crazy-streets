@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Canvas tutorial</title>
+    <script type="text/javascript">
+      // HALF_WIDTH + TURN_RADIUS must be < TILE_SIZE/2
+      var TILE_SIZE = 50;
+      var HALF_WIDTH = 15;
+      var TURN_RADIUS = 0;
+      var FILL_FACTOR = 0.6;
+      function draw() {
+        var canvas = document.getElementById('tutorial');
+        var canvasWidth = canvas.width;
+        var canvasHeight = canvas.height;
+        if (canvas.getContext) {
+          var ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          var radius = document.querySelector('#radius').value;
+          TURN_RADIUS = parseInt(radius);
+          var width = document.querySelector('#width').value;
+          HALF_WIDTH = parseInt(width)/2;
+          var fillFactor = document.querySelector('#fill').value;
+          console.log('ff: ' + fillFactor);
+          FILL_FACTOR = fillFactor/100;
+          console.log('ff: ' + FILL_FACTOR);
+          for (var x = 0; x <= canvasWidth; x += TILE_SIZE) {
+            for (var y = 0; y <= canvasHeight; y += TILE_SIZE) {
+
+              // Randomly generate links to neighbors, in a way that is consistent with neigbhors
+              var topSeed = y * TILE_SIZE + x + (TILE_SIZE/2);
+              var topLink = Boolean(cheesyRandom(topSeed) < FILL_FACTOR);
+              var bottomSeed = (y + TILE_SIZE) * TILE_SIZE + x + TILE_SIZE/2;
+              var bottomLink = Boolean(cheesyRandom(bottomSeed) < FILL_FACTOR);
+              var leftSeed = x * TILE_SIZE + y + TILE_SIZE/2;
+              var leftLink = Boolean(cheesyRandom(leftSeed) < FILL_FACTOR);
+              var rightSeed = (x + TILE_SIZE) * TILE_SIZE + y + TILE_SIZE/2;
+              var rightLink = Boolean(cheesyRandom(rightSeed) < FILL_FACTOR);
+              // console.log('xy: ' + x + ' ' + y );
+              // console.log('  seeds trbl: ' + topSeed + ' ' + rightSeed + ' ' + bottomSeed + ' ' + leftSeed);
+              // console.log('  rands trbl: ' + cheesyRandom(topSeed) + ' ' + cheesyRandom(rightSeed) + ' ' + cheesyRandom(bottomSeed) + ' ' + cheesyRandom(leftSeed));
+              // console.log('  links trbl: ' + topLink + ' ' + rightLink + ' ' + bottomLink + ' ' + leftLink);
+
+              //
+              //  Draw the network within the tile with top-left corner at x,y
+              //
+              ctx.beginPath();
+            
+              //BEGIN TRAINING WHEELS
+              //  TODO: replace with generalized rounded version below
+              ctx.strokeStyle = '#00FF00';
+              if (topLink) {
+                ctx.moveTo(x + TILE_SIZE/2, y);
+                ctx.lineTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
+              }
+              if (bottomLink) {
+                ctx.moveTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
+                ctx.lineTo(x + TILE_SIZE/2, y + TILE_SIZE)
+              }
+              if (leftLink) {
+                ctx.moveTo(x, y + TILE_SIZE/2);
+                ctx.lineTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
+              }
+              if (rightLink) {
+                ctx.moveTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
+                ctx.lineTo(x + TILE_SIZE, y + TILE_SIZE/2)
+              }
+              //  END TRAINING WHEELS
+              ctx.stroke();
+              ctx.strokeStyle = '#000000';
+
+              if (topLink) {
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + 0);
+                ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + 0);
+                ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS);
+              }
+              if (bottomLink) {
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE);
+                ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE);
+                ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS);
+              }
+              if (leftLink) {
+                ctx.moveTo(x,                                          y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.moveTo(x,                                          y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS, y + TILE_SIZE/2 + HALF_WIDTH);
+              }
+              if (rightLink) {
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE,                              y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE,                              y + TILE_SIZE/2 + HALF_WIDTH);
+              }
+
+              // N
+
+              // EXAMPLE ROUNDED VERSION -- 
+              //   t && b && r && !l
+              // ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + 0);
+              // ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE);
+
+              // ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + 0);
+              // ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS);
+              // ctx.arc(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS, TURN_RADIUS, Math.PI, Math.PI * 0.5, true);
+              // ctx.lineTo(x + TILE_SIZE, y + TILE_SIZE/2 - HALF_WIDTH);
+
+              // ctx.moveTo(x + TILE_SIZE, y + TILE_SIZE/2 + HALF_WIDTH);
+              // ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 + HALF_WIDTH);
+              // ctx.arc(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, TURN_RADIUS, Math.PI * 1.5,Math.PI, true);
+              // ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE);
+
+              // draw reference circle in middle of each tile
+              ctx.moveTo(x + TILE_SIZE/2 + 5, y + TILE_SIZE/2);
+              ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, 5, 0, Math.PI * 2, true);
+
+              ctx.stroke();
+            }
+          }
+        }
+      }
+      function outputUpdate(vol) {
+        document.querySelector('#radius').value = vol;
+        draw();
+      }
+      function outputUpdate2(vol) {
+        document.querySelector('#width').value = vol;
+        draw();
+      }
+      function outputUpdateFill(vol) {
+        document.querySelector('#fill').value = vol;
+        draw();
+      }
+
+      // low-budget 'random' generator
+      // found this on Stack Overflow
+      function cheesyRandom(seed) {
+          var x = Math.sin(seed) * 1000000;
+          return x - Math.floor(x);
+      }
+
+    </script>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body onload="draw();">
+    <canvas id="tutorial" width="1190" height="490"></canvas>
+   
+    <label for="fader">Radius</label>
+    <input type="range" min="0" max="25" value="10" id="fader" 
+      step="1" oninput="outputUpdate(value)">
+    <output for="fader" id="radius">10</output>
+
+    <label for="fader">Street Width</label>
+    <input type="range" min="0" max="50" value="10" id="fader" 
+      step="1" oninput="outputUpdate2(value)">
+    <output for="fader" id="width">10</output>
+
+    <label for="fader">Fill Percent</label>
+    <input type="range" min="0" max="100" value="60" id="fader" 
+      step="1" oninput="outputUpdateFill(value)">
+    <output for="fader" id="fill">60</output>
+  </body>
+</html>
