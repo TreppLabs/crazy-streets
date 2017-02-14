@@ -94,7 +94,53 @@
                 ctx.lineTo(x + TILE_SIZE,                              y + TILE_SIZE/2 + HALF_WIDTH);
               }
 
-              // N
+              // Handle all 16 cases 
+              // all arcs named CCW
+
+              // case 1: 0 links
+              // case 2: 1 link (4 different sides)
+              // case 3: 2 links adjacent (4 different orientations)
+              // case 4: 2 links opposite (2 orientations)
+              // case 5: 3 links (4 different orientations)
+              // case 6: 4 links
+              var b = bottomLink;
+              var t = topLink;
+              var r = rightLink;
+              var l = leftLink;
+              var offset = TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS;
+
+              if (!t && !b && !l && !r) {
+                console.log('Case 1: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
+              } else if (( t && !b && !l && !r) || 
+                         (!t &&  b && !l && !r) ||
+                         (!t && !b &&  l && !r) ||
+                         (!t && !b && !l &&  r))   {
+                console.log('Case 2: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
+              } else if ( t && !b &&  l && !r) {
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.arc(x + offset, y + offset, TURN_RADIUS, Math.PI/2, 0, true);
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.arc(x + offset, y + offset, TURN_RADIUS + HALF_WIDTH*2, Math.PI/2, 0, true);
+              } else if (!t &&  b &&  l && !r) {
+                blSmallArc(ctx);
+                blBigArc(ctx);
+              } else if ( t && !b && !l &&  r) {
+                trSmallArc(ctx);
+                trBigArc(ctx);
+              } else if (!t &&  b && !l &&  r) {
+                brSmallArc(ctx);
+                brBigArc(ctx);
+              } else if (( t &&  b && !l && !r) || 
+                         (!t && !b &&  l &&  r))   {
+                console.log('Case 4: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
+              } else if (( t &&  b &&  l && !r) ||
+                         ( t &&  b && !l &&  r) || 
+                         ( t && !b &&  l &&  r) || 
+                         (!t &&  b &&  l &&  r))   {
+                console.log('Case 5: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
+              } else if ( t &&  b &&  l &&  r) {
+                console.log('Case 6: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
+              }
 
               // EXAMPLE ROUNDED VERSION -- 
               //   t && b && r && !l
@@ -120,6 +166,31 @@
           }
         }
       }
+
+      // a bunch of utility functions to draw arcs and connectors for the local connectivity in a tile
+      function tlSmallArc(ctx,x,y) {
+      }
+      function tlBigArc(ctx,x,y) {
+      }
+      function blSmallArc(ctx) {
+      }
+      function blBigArc(ctx) {
+
+      }
+      function trSmallArc(ctx) {
+
+      }
+      function trBigArc(ctx) {
+
+      }
+      function brSmallArc(ctx) {
+
+      }
+      function brBigArc(ctx) {
+
+      }
+      // add utilities for lines (4) and stubs (4)
+
       function outputUpdate(vol) {
         document.querySelector('#radius').value = vol;
         draw();
@@ -146,7 +217,7 @@
     </style>
   </head>
   <body onload="draw();">
-    <canvas id="tutorial" width="1190" height="490"></canvas>
+    <canvas id="tutorial" width="890" height="490"></canvas>
    
     <label for="fader">Radius</label>
     <input type="range" min="0" max="25" value="10" id="fader" 
