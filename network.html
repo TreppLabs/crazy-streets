@@ -132,13 +132,26 @@
 
 
               } else if ( t && !b &&  l && !r) {
+                // draw big arc, small arc
                 ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
                 ctx.arc(x + offset, y + offset, TURN_RADIUS, Math.PI/2, 0, true);
                 ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
                 ctx.arc(x + offset, y + offset, TURN_RADIUS + HALF_WIDTH*2, Math.PI/2, 0, true);
               } else if (!t &&  b &&  l && !r) {
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.arc(x + offset, y + TILE_SIZE - offset, TURN_RADIUS, 0, Math.PI * 3/2, true);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.arc(x + offset, y + TILE_SIZE - offset, TURN_RADIUS + HALF_WIDTH*2, 0, Math.PI * 3/2, true);
               } else if ( t && !b && !l &&  r) {
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + offset);
+                ctx.arc(x + TILE_SIZE - offset, y + offset, TURN_RADIUS, Math.PI, Math.PI/2, true);
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + offset);
+                ctx.arc(x + TILE_SIZE - offset, y + offset, TURN_RADIUS + HALF_WIDTH*2, Math.PI, Math.PI/2, true);
               } else if (!t &&  b && !l &&  r) {
+                ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE - offset, TURN_RADIUS, Math.PI * 3/2, Math.PI, true);
+                ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE - offset, TURN_RADIUS + HALF_WIDTH*2, Math.PI * 3/2, Math.PI, true);
               } else if (( t &&  b && !l && !r) || 
                          (!t && !b &&  l &&  r))   {
               } else if (( t &&  b &&  l && !r) ||
