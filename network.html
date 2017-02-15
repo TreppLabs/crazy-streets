@@ -110,36 +110,38 @@
               var offset = TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS;
 
               if (!t && !b && !l && !r) {
-                console.log('Case 1: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
               } else if (( t && !b && !l && !r) || 
                          (!t &&  b && !l && !r) ||
                          (!t && !b &&  l && !r) ||
                          (!t && !b && !l &&  r))   {
-                console.log('Case 2: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
+ 
+                // draw a short stub from the one direction
+                if ( t && !b && !l && !r) {
+                  ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + offset);
+                  ctx.arc(x + TILE_SIZE/2, y + offset, HALF_WIDTH, Math.PI, 0, true);
+                } else if  (!t &&  b && !l && !r) {
+                  ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE - offset);
+                  ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE - offset, HALF_WIDTH, 0, Math.PI, true);
+                } else if (!t && !b &&  l && !r) {
+                } else if (!t && !b && !l &&  r) {
+                }
+
+
               } else if ( t && !b &&  l && !r) {
                 ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
                 ctx.arc(x + offset, y + offset, TURN_RADIUS, Math.PI/2, 0, true);
                 ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
                 ctx.arc(x + offset, y + offset, TURN_RADIUS + HALF_WIDTH*2, Math.PI/2, 0, true);
               } else if (!t &&  b &&  l && !r) {
-                blSmallArc(ctx);
-                blBigArc(ctx);
               } else if ( t && !b && !l &&  r) {
-                trSmallArc(ctx);
-                trBigArc(ctx);
               } else if (!t &&  b && !l &&  r) {
-                brSmallArc(ctx);
-                brBigArc(ctx);
               } else if (( t &&  b && !l && !r) || 
                          (!t && !b &&  l &&  r))   {
-                console.log('Case 4: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
               } else if (( t &&  b &&  l && !r) ||
                          ( t &&  b && !l &&  r) || 
                          ( t && !b &&  l &&  r) || 
                          (!t &&  b &&  l &&  r))   {
-                console.log('Case 5: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
               } else if ( t &&  b &&  l &&  r) {
-                console.log('Case 6: xy: ' + x + ' ' + y + ' tlbr: ' + t + ' ' + l + ' ' + b + ' ' + r);
               }
 
               // EXAMPLE ROUNDED VERSION -- 
@@ -167,29 +169,6 @@
         }
       }
 
-      // a bunch of utility functions to draw arcs and connectors for the local connectivity in a tile
-      function tlSmallArc(ctx,x,y) {
-      }
-      function tlBigArc(ctx,x,y) {
-      }
-      function blSmallArc(ctx) {
-      }
-      function blBigArc(ctx) {
-
-      }
-      function trSmallArc(ctx) {
-
-      }
-      function trBigArc(ctx) {
-
-      }
-      function brSmallArc(ctx) {
-
-      }
-      function brBigArc(ctx) {
-
-      }
-      // add utilities for lines (4) and stubs (4)
 
       function outputUpdate(vol) {
         document.querySelector('#radius').value = vol;
