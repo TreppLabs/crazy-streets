@@ -123,7 +123,11 @@
                   ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE - offset);
                   ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE - offset, HALF_WIDTH, 0, Math.PI, true);
                 } else if (!t && !b &&  l && !r) {
+                  ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                  ctx.arc(x + offset, y + TILE_SIZE/2, HALF_WIDTH, Math.PI/2, Math.PI * 3/2, true);
                 } else if (!t && !b && !l &&  r) {
+                  ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                  ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE/2, HALF_WIDTH, Math.PI * 3/2, Math.PI/2, true);
                 }
 
 
