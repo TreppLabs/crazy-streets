@@ -21,9 +21,7 @@
           var width = document.querySelector('#width').value;
           HALF_WIDTH = parseInt(width)/2;
           var fillFactor = document.querySelector('#fill').value;
-          console.log('ff: ' + fillFactor);
           FILL_FACTOR = fillFactor/100;
-          console.log('ff: ' + FILL_FACTOR);
           for (var x = 0; x <= canvasWidth; x += TILE_SIZE) {
             for (var y = 0; y <= canvasHeight; y += TILE_SIZE) {
 
@@ -46,27 +44,6 @@
               //
               ctx.beginPath();
             
-              //BEGIN TRAINING WHEELS
-              //  TODO: replace with generalized rounded version below
-              ctx.strokeStyle = '#00FF00';
-              if (topLink) {
-                ctx.moveTo(x + TILE_SIZE/2, y);
-                ctx.lineTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
-              }
-              if (bottomLink) {
-                ctx.moveTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
-                ctx.lineTo(x + TILE_SIZE/2, y + TILE_SIZE)
-              }
-              if (leftLink) {
-                ctx.moveTo(x, y + TILE_SIZE/2);
-                ctx.lineTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
-              }
-              if (rightLink) {
-                ctx.moveTo(x + TILE_SIZE/2, y + TILE_SIZE/2);
-                ctx.lineTo(x + TILE_SIZE, y + TILE_SIZE/2)
-              }
-              //  END TRAINING WHEELS
-              ctx.stroke();
               ctx.strokeStyle = '#000000';
 
               if (topLink) {
@@ -95,42 +72,32 @@
               }
 
               // Handle all 16 cases 
-              // all arcs named CCW
+              // all arcs CCW
 
-              // case 1: 0 links
-              // case 2: 1 link (4 different sides)
-              // case 3: 2 links adjacent (4 different orientations)
-              // case 4: 2 links opposite (2 orientations)
-              // case 5: 3 links (4 different orientations)
-              // case 6: 4 links
               var b = bottomLink;
               var t = topLink;
               var r = rightLink;
               var l = leftLink;
               var offset = TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS;
 
+              // case 1: 0 links
               if (!t && !b && !l && !r) {
-              } else if (( t && !b && !l && !r) || 
-                         (!t &&  b && !l && !r) ||
-                         (!t && !b &&  l && !r) ||
-                         (!t && !b && !l &&  r))   {
- 
-                // draw a short stub from the one direction
-                if ( t && !b && !l && !r) {
-                  ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + offset);
-                  ctx.arc(x + TILE_SIZE/2, y + offset, HALF_WIDTH, Math.PI, 0, true);
-                } else if  (!t &&  b && !l && !r) {
-                  ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE - offset);
-                  ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE - offset, HALF_WIDTH, 0, Math.PI, true);
-                } else if (!t && !b &&  l && !r) {
-                  ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
-                  ctx.arc(x + offset, y + TILE_SIZE/2, HALF_WIDTH, Math.PI/2, Math.PI * 3/2, true);
-                } else if (!t && !b && !l &&  r) {
-                  ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 - HALF_WIDTH);
-                  ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE/2, HALF_WIDTH, Math.PI * 3/2, Math.PI/2, true);
-                }
 
+              // case 2: 1 link (4 different sides)
+              } else if ( t && !b && !l && !r) {
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + offset);
+                ctx.arc(x + TILE_SIZE/2, y + offset, HALF_WIDTH, Math.PI, 0, true);
+              } else if  (!t &&  b && !l && !r) {
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE - offset, HALF_WIDTH, 0, Math.PI, true);
+              } else if (!t && !b &&  l && !r) {
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.arc(x + offset, y + TILE_SIZE/2, HALF_WIDTH, Math.PI/2, Math.PI * 3/2, true);
+              } else if (!t && !b && !l &&  r) {
+                ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE/2, HALF_WIDTH, Math.PI * 3/2, Math.PI/2, true);
 
+              // case 3: 2 links adjacent (4 different orientations)
               } else if ( t && !b &&  l && !r) {
                 // draw big arc, small arc
                 ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
@@ -152,33 +119,64 @@
                 ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE - offset, TURN_RADIUS, Math.PI * 3/2, Math.PI, true);
                 ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 - HALF_WIDTH);
                 ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE - offset, TURN_RADIUS + HALF_WIDTH*2, Math.PI * 3/2, Math.PI, true);
-              } else if (( t &&  b && !l && !r) || 
-                         (!t && !b &&  l &&  r))   {
-              } else if (( t &&  b &&  l && !r) ||
-                         ( t &&  b && !l &&  r) || 
-                         ( t && !b &&  l &&  r) || 
-                         (!t &&  b &&  l &&  r))   {
+
+              // case 4: 2 links opposite (2 orientations)
+              } else if ( t &&  b && !l && !r) { 
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + offset);
+                ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + offset);
+                ctx.lineTo(x + TILE_SIZE/2 +   HALF_WIDTH, y + TILE_SIZE - offset);
+              } else if (!t && !b &&  l &&  r) {
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 + HALF_WIDTH);
+
+              // case 5: 3 links (4 different orientations)
+              } else if ( t &&  b &&  l && !r) {
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + offset);
+                ctx.lineTo(x + TILE_SIZE/2 +   HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.arc(x + offset, y + offset, TURN_RADIUS, Math.PI/2, 0, true);
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.arc(x + offset, y + TILE_SIZE - offset, TURN_RADIUS, 0, Math.PI * 3/2, true);
+              } else if ( t &&  b && !l &&  r) {
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + offset);
+                ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + offset);
+                ctx.arc(x + TILE_SIZE - offset, y + offset, TURN_RADIUS, Math.PI, Math.PI/2, true);
+                ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE - offset, TURN_RADIUS, Math.PI * 3/2, Math.PI, true);
+              } else if ( t && !b &&  l &&  r) {
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.arc(x + offset, y + offset, TURN_RADIUS, Math.PI/2, 0, true);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + offset);
+                ctx.arc(x + TILE_SIZE - offset, y + offset, TURN_RADIUS, Math.PI, Math.PI/2, true);
+              } else if (!t &&  b &&  l &&  r) {
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.lineTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.arc(x + offset, y + TILE_SIZE - offset, TURN_RADIUS, 0, Math.PI * 3/2, true);
+                ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE - offset, TURN_RADIUS, Math.PI * 3/2, Math.PI, true);
+
+              // case 6: 4 links
               } else if ( t &&  b &&  l &&  r) {
+                ctx.moveTo(x + TILE_SIZE - offset, y + TILE_SIZE/2 + HALF_WIDTH);
+                ctx.arc(x + TILE_SIZE - offset, y + TILE_SIZE - offset, TURN_RADIUS, Math.PI * 3/2, Math.PI, true);
+                ctx.moveTo(x + offset, y + TILE_SIZE/2 - HALF_WIDTH);
+                ctx.arc(x + offset, y + offset, TURN_RADIUS, Math.PI/2, 0, true);
+                ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE - offset);
+                ctx.arc(x + offset, y + TILE_SIZE - offset, TURN_RADIUS, 0, Math.PI * 3/2, true);
+                ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + offset);
+                ctx.arc(x + TILE_SIZE - offset, y + offset, TURN_RADIUS, Math.PI, Math.PI/2, true);
               }
 
-              // EXAMPLE ROUNDED VERSION -- 
-              //   t && b && r && !l
-              // ctx.moveTo(x + TILE_SIZE/2 - HALF_WIDTH, y + 0);
-              // ctx.lineTo(x + TILE_SIZE/2 - HALF_WIDTH, y + TILE_SIZE);
-
-              // ctx.moveTo(x + TILE_SIZE/2 + HALF_WIDTH, y + 0);
-              // ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS);
-              // ctx.arc(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 - HALF_WIDTH - TURN_RADIUS, TURN_RADIUS, Math.PI, Math.PI * 0.5, true);
-              // ctx.lineTo(x + TILE_SIZE, y + TILE_SIZE/2 - HALF_WIDTH);
-
-              // ctx.moveTo(x + TILE_SIZE, y + TILE_SIZE/2 + HALF_WIDTH);
-              // ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 + HALF_WIDTH);
-              // ctx.arc(x + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, y + TILE_SIZE/2 + HALF_WIDTH + TURN_RADIUS, TURN_RADIUS, Math.PI * 1.5,Math.PI, true);
-              // ctx.lineTo(x + TILE_SIZE/2 + HALF_WIDTH, y + TILE_SIZE);
-
               // draw reference circle in middle of each tile
-              ctx.moveTo(x + TILE_SIZE/2 + 5, y + TILE_SIZE/2);
-              ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, 5, 0, Math.PI * 2, true);
+              //ctx.moveTo(x + TILE_SIZE/2 + 5, y + TILE_SIZE/2);
+              //ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, 5, 0, Math.PI * 2, true);
 
               ctx.stroke();
             }
