@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <title>Canvas tutorial</title>
+    <title>Crazy Streets</title>
     <script type="text/javascript">
       // HALF_WIDTH + TURN_RADIUS must be < TILE_SIZE/2
       var TILE_SIZE = 50;
@@ -208,24 +208,46 @@
     </script>
     <style type="text/css">
       canvas { border: 1px solid black; }
+      #main {
+        background: #999;
+        padding: 10px;
+      }
+
+      .map {
+        background: #ccc;
+        /*height: 200px;*/
+        margin: 20px;
+      }
+      .controls {
+        background: #ccc;
+        /*height: 200px;*/
+        margin: 20px;
+      }
     </style>
   </head>
+
+
   <body onload="draw();">
-    <canvas id="tutorial" width="890" height="490"></canvas>
-   
-    <label for="fader">Radius</label>
-    <input type="range" min="0" max="25" value="10" id="fader" 
-      step="1" oninput="outputUpdate(value)">
-    <output for="fader" id="radius">10</output>
+    <div id="main">
+      <div class="map">
+        <canvas id="tutorial" width="890" height="490"></canvas>
+      </div> 
+      <div class="controls">
+        <label for="fader">Radius</label>
+        <input type="range" min="0" max="25" value="10" id="fader" 
+          step="1" oninput="outputUpdate(value)">
+        <output for="fader" id="radius">10</output>
 
-    <label for="fader">Street Width</label>
-    <input type="range" min="0" max="50" value="10" id="fader" 
-      step="1" oninput="outputUpdate2(value)">
-    <output for="fader" id="width">10</output>
+        <label for="fader">Street Width</label>
+        <input type="range" min="0" max="50" value="10" id="fader" 
+          step="1" oninput="outputUpdate2(value)">
+        <output for="fader" id="width">10</output>
 
-    <label for="fader">Fill Percent</label>
-    <input type="range" min="0" max="100" value="60" id="fader" 
-      step="1" oninput="outputUpdateFill(value)">
-    <output for="fader" id="fill">60</output>
+        <label for="fader">Fill Percent</label>
+        <input type="range" min="0" max="100" value="60" id="fader" 
+          step="1" oninput="outputUpdateFill(value)">
+        <output for="fader" id="fill">60</output>
+      </div>
+    </div>
   </body>
 </html>
