@@ -6,3 +6,5 @@ save as a *.html file then open in your browser
 fiddle with sliders
 
 edit file to change size of canvas
+
+would like to add rows/cols support
